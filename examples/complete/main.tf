@@ -41,7 +41,6 @@ module "securityhub_bot" {
   rules_s3_bucket = {
     enabled = true
     create  = true
-    name    = var.rules_s3_bucket
     prefix  = "securityhub-rules/"
   }
 

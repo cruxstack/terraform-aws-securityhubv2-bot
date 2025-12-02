@@ -16,11 +16,6 @@ variable "stage" {
   default     = ""
 }
 
-variable "rules_s3_bucket" {
-  description = "S3 bucket containing automation rules"
-  type        = string
-}
-
 variable "slack_bot_token" {
   description = "Slack bot token (requires chat:write scope)"
   type        = string

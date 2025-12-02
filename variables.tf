@@ -98,7 +98,7 @@ variable "rules_s3_bucket" {
   description = "S3 bucket configuration for storing automation rules. Set create=true to create a new bucket, or provide an existing bucket name."
   type = object({
     enabled = optional(bool, false)
-    create  = optional(bool, false)
+    create  = optional(bool, true)
     name    = optional(string)
     prefix  = optional(string, "rules/")
   })

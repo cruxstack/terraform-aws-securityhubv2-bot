@@ -66,7 +66,7 @@ resource "aws_s3_object" "rules" {
 # ================================================================== lambda ===
 
 module "bot_artifact" {
-  source = "github.com/cruxstack/terraform-docker-artifact-packager?ref=v1.4.0"
+  source = "github.com/cruxstack/terraform-docker-artifact-packager?ref=v1.4.1"
 
   count = local.enabled ? 1 : 0
 

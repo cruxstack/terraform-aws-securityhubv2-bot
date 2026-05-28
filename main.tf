@@ -98,8 +98,7 @@ resource "aws_lambda_function" "this" {
   reserved_concurrent_executions = var.lambda_config.reserved_concurrent_executions
   architectures                  = [var.lambda_config.architecture]
 
-  filename         = module.bot_artifact[0].artifact_package_path
-  source_code_hash = filebase64sha256(module.bot_artifact[0].artifact_package_path)
+  filename = module.bot_artifact[0].artifact_package_path
 
   environment {
     variables = local.lambda_environment

@@ -20,13 +20,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: setup terraform
-        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
 
       - name: Cache Terraform Plugins
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ${{ runner.temp }}/.terraform.d/plugin-cache
           key: tf-plugins-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}
@@ -36,7 +36,7 @@ jobs:
 
       - name: Suggest Terraform Format
         if: github.event_name == 'pull_request'
-        uses: reviewdog/action-suggester@fc4b06f8697e1e66bd66703f660005079be0b3dc # v1.24.0
+        uses: reviewdog/action-suggester@aa38384ceb608d00f84b4690cacc83a5aba307ff # v1.24.0
         with:
           tool_name: terraform-fmt
           level: warning
@@ -48,7 +48,7 @@ jobs:
         run: terraform fmt -recursive -check
 
       - name: Validate Terraform
-        uses: reviewdog/action-terraform-validate@6f4d41dfe9cf0c095aec3d341110eadb4c90c360 # v1.16.1
+        uses: reviewdog/action-terraform-validate@4aaf1db71358f4f35ff414d656334e0ce3c34ce5 # v1.17.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
@@ -63,7 +63,7 @@ jobs:
       #     fail_level: error
 
       - name: Lint GitHub Actions
-        uses: reviewdog/action-actionlint@2ca4336c1821eaff87db1f72fd3923b3250e0427 # v1.69.0
+        uses: reviewdog/action-actionlint@6fb7acc99f4a1008869fa8a0f09cfca740837d9d # v1.72.0
         with:
           reporter: github-pr-check
           fail_level: error

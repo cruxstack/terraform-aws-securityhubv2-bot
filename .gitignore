@@ -1,6 +1,10 @@
 # Local .terraform directories
 **/.terraform/*
 
+# Terraform provider lock file (module is reusable; consumers generate their own)
+.terraform.lock.hcl
+**/.terraform.lock.hcl
+
 # .tfstate files
 *.tfstate
 *.tfstate.*

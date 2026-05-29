@@ -65,24 +65,40 @@ resource "aws_s3_object" "rules" {
 
 # ================================================================== lambda ===
 
-module "bot_artifact" {
-  source = "github.com/cruxstack/terraform-docker-artifact-packager?ref=v1.4.1"
+# transitional: forget pre-buildkit module.bot_artifact from state on upgrade
+removed {
+  from = module.bot_artifact
 
+  lifecycle {
+    destroy = false
+  }
+}
+
+data "buildkit_context" "bot" {
   count = local.enabled ? 1 : 0
 
-  attributes             = ["lambda"]
-  artifact_src_path      = "/tmp/package.zip"
-  artifact_dst_directory = "${path.module}/dist"
-  docker_build_context   = abspath("${path.module}/assets/lambda-function")
-  docker_build_target    = "package"
-  force_rebuild_id       = var.bot_force_rebuild_id
+  path = abspath("${path.module}/assets/lambda-function")
+}
 
-  docker_build_args = {
+resource "buildkit_artifact" "bot" {
+  count = local.enabled ? 1 : 0
+
+  build_context     = abspath("${path.module}/assets/lambda-function")
+  dockerfile        = "Dockerfile"
+  target            = "package"
+  artifact_src_path = "/tmp/package.zip"
+  artifact_src_type = "zip"
+  artifact_dst_path = "${path.module}/dist/package.zip"
+
+  build_args = {
     BOT_VERSION = var.bot_version
     BOT_REPO    = var.bot_repo
   }
 
-  context = module.this.context
+  triggers = {
+    context          = data.buildkit_context.bot[0].digest
+    force_rebuild_id = var.bot_force_rebuild_id
+  }
 }
 
 resource "aws_lambda_function" "this" {
@@ -98,7 +114,8 @@ resource "aws_lambda_function" "this" {
   reserved_concurrent_executions = var.lambda_config.reserved_concurrent_executions
   architectures                  = [var.lambda_config.architecture]
 
-  filename = module.bot_artifact[0].artifact_package_path
+  filename         = buildkit_artifact.bot[0].artifact_path
+  source_code_hash = buildkit_artifact.bot[0].artifact_sha256
 
   environment {
     variables = local.lambda_environment
